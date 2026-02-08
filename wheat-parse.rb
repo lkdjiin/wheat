@@ -11,6 +11,16 @@ WEATHER_CODE = {
   '55' => 'Bruine forte',
 }
 
+DAYS = {
+  'Sun' => 'dim',
+  'Mon' => 'lun',
+  'Tue' => 'mar',
+  'Wed' => 'mer',
+  'Thu' => 'jeu',
+  'Fri' => 'ven',
+  'Sat' => 'sam'
+}
+
 # Parse data
 data = JSON.load_file('open-meteo.json')
 
@@ -59,3 +69,16 @@ proba = 0
 end
 proba = proba / 6
 puts "après-midi #{temp_low}°/#{temp_high}° #{proba}%"
+puts
+
+puts "=== Tendances sur 2 semaines ==="
+
+puts " " + data['daily']['time'].map { |e| e[8..9] }.join("   ")
+
+temp_d = d
+14.times do |i|
+  print DAYS[temp_d.strftime('%a')]
+  print '  '
+  temp_d = temp_d.next
+end
+puts
