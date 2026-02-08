@@ -80,6 +80,14 @@ class MeteoData
     daily['time']
   end
 
+  def two_weeks_max_temperature
+    daily['temperature_2m_max'].map { _1.round.to_s }
+  end
+
+  def two_weeks_min_temperature
+    daily['temperature_2m_min'].map { _1.round.to_s }
+  end
+
   private
 
   def current
@@ -144,6 +152,9 @@ class Printer
       print '  '
       temp_d = temp_d.next
     end
+    puts
+    puts @d.two_weeks_max_temperature.map { sprintf('% 3d°', _1) }.join(" ")
+    puts @d.two_weeks_min_temperature.map { sprintf('% 3d°', _1) }.join(" ")
     puts
   end
 end

@@ -21,3 +21,8 @@ lun  mar  mer  jeu  ven  sam  dim  lun  mar  mer  jeu  ven  sam  dim
  -1°   0°   4°   4°   7°  10°   9°  15°
 -10°  -8°  -2°   0°   1°   8°  10°  12°
       12%       25%  78%  99%
+
+-12°
+ -3°
+  0°
+ 14°
