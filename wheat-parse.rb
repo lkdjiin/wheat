@@ -48,6 +48,10 @@ class MeteoData
     hourly['precipitation_probability'][hour].to_s
   end
 
+  def hourly_description(hour)
+    WEATHER_CODE[hourly['weather_code'][hour].to_s] || 'CODE INCONNU'
+  end
+
   def temperature_tomorrow_at_0600
     hourly['temperature_2m'][30].round.to_s
   end
@@ -125,7 +129,8 @@ class Printer
       break if i >= 24
       t = sprintf('% 3d', @d.hourly_temperature(i))
       p = @d.hourly_precipitation_probability(i)
-      puts "#{i}h #{t}° #{p}%"
+      d = @d.hourly_description(i)
+      puts "#{i}h #{t}° · #{p}% · #{d}"
     end
     puts
   end
