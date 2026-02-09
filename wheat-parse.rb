@@ -130,7 +130,7 @@ class Printer
       t = sprintf('% 3d', @d.hourly_temperature(i))
       p = @d.hourly_precipitation_probability(i)
       d = @d.hourly_description(i)
-      puts "#{i}h #{t}° · #{p}% · #{d}"
+      puts "#{sprintf('%2d', i)}h #{t}° · #{p}% · #{d}"
     end
     puts
   end
