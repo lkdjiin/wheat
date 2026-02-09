@@ -92,6 +92,10 @@ class MeteoData
     daily['temperature_2m_min'].map { _1.round.to_s }
   end
 
+  def two_weeks_mean_precipitation_probability
+    daily['precipitation_probability_mean'].map(&:to_s)
+  end
+
   private
 
   def current
@@ -160,6 +164,7 @@ class Printer
     puts
     puts @d.two_weeks_max_temperature.map { sprintf('% 3d°', _1) }.join(" ")
     puts @d.two_weeks_min_temperature.map { sprintf('% 3d°', _1) }.join(" ")
+    puts @d.two_weeks_mean_precipitation_probability.map { sprintf('%3d%%', _1) }.join(" ")
     puts
   end
 end
