@@ -124,7 +124,7 @@ class Printer
   end
 
   def display_next_hours
-    puts "=== Les prochaines heures ==="
+    puts "=== Aujourd'hui ==="
     @date.hour.upto(@date.hour + 7).each do |i|
       break if i >= 24
       t = sprintf('% 3d', @d.hourly_temperature(i))
