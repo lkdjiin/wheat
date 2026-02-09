@@ -7,6 +7,6 @@ forecast = '&forecast_days=14'
 
 url = "#{api}#{daily}#{hourly}#{current}#{tz}#{forecast}"
 
-command = "curl '#{url}' > open-meteo.json"
+command = "curl --no-progress-meter '#{url}' > open-meteo.json"
 
 system(command)
