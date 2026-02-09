@@ -21,64 +21,153 @@ DAYS = {
   'Sat' => 'sam'
 }
 
-# Parse data
-data = JSON.load_file('open-meteo.json')
+# ----------------------------------------------------------------------
+# Let's try that all public methods return a string.
+class MeteoData
+  def initialize
+    @data = JSON.load_file('open-meteo.json')
+  end
 
-current = data['current']
-date = current['time'].sub('T', ' · ')
-temperature = "#{current['temperature_2m'].round}°"
-description = WEATHER_CODE[current['weather_code'].to_s] || 'CODE INCONNU'
+  def current_temperature
+    "#{current['temperature_2m'].round}"
+  end
 
-# Format data
-current_line = "#{temperature} · #{description} · #{date}"
+  def current_description
+    WEATHER_CODE[current['weather_code'].to_s] || 'CODE INCONNU'
+  end
 
-# Display data
-puts "=== Maintenant ==="
-puts current_line
-puts
+  def current_time
+    current['time']
+  end
 
-puts "=== Les prochaines heures ==="
-d = DateTime.iso8601(current['time'])
-d.hour.upto(d.hour + 7).each do |i|
-  break if i >= 24
-  t = sprintf('% 3d', data['hourly']['temperature_2m'][i].round)
-  p = data['hourly']['precipitation_probability'][i]
-  puts "#{i}h #{t}° #{p}%"
+  def hourly_temperature(hour)
+    hourly['temperature_2m'][hour].round.to_s
+  end
+
+  def hourly_precipitation_probability(hour)
+    hourly['precipitation_probability'][hour].to_s
+  end
+
+  def hourly_description(hour)
+    WEATHER_CODE[hourly['weather_code'][hour].to_s] || 'CODE INCONNU'
+  end
+
+  def temperature_tomorrow_at_0600
+    hourly['temperature_2m'][30].round.to_s
+  end
+
+  def temperature_tomorrow_at_1100
+    hourly['temperature_2m'][35].round.to_s
+  end
+
+  def precipitation_probability_tomorrow_morning
+    proba = 0
+    30.upto(35).each { |i| proba += hourly['precipitation_probability'][i] }
+    (proba / 6).to_s
+  end
+
+  def temperature_tomorrow_at_1200
+    hourly['temperature_2m'][36].round.to_s
+  end
+
+  def temperature_tomorrow_at_1700
+    hourly['temperature_2m'][41].round.to_s
+  end
+
+  def precipitation_probability_tomorrow_afternoon
+    proba = 0
+    36.upto(41).each { |i| proba += hourly['precipitation_probability'][i] }
+    (proba / 6).to_s
+  end
+
+  def two_weeks_date
+    daily['time']
+  end
+
+  def two_weeks_max_temperature
+    daily['temperature_2m_max'].map { _1.round.to_s }
+  end
+
+  def two_weeks_min_temperature
+    daily['temperature_2m_min'].map { _1.round.to_s }
+  end
+
+  private
+
+  def current
+    @data['current']
+  end
+
+  def hourly
+    @data['hourly']
+  end
+
+  def daily
+    @data['daily']
+  end
 end
-puts
 
-puts "=== Demain ==="
-# Tomorrow morning
-# Mean of hours 30 to 35
-temp_low = data['hourly']['temperature_2m'][30].round
-temp_high = data['hourly']['temperature_2m'][35].round
-proba = 0
-30.upto(35).each do |i|
-  proba += data['hourly']['precipitation_probability'][i]
+# ----------------------------------------------------------------------
+class Printer
+  def initialize(data)
+    @d = data
+    @date = DateTime.iso8601(@d.current_time)
+  end
+
+  def display_current_section
+    temp = @d.current_temperature
+    desc = @d.current_description
+    date = @d.current_time.sub('T', ' · rapport : ')
+    puts "=== Maintenant ==="
+    puts "#{temp}° · #{desc} · #{date}"
+    puts
+  end
+
+  def display_next_hours
+    puts "=== Les prochaines heures ==="
+    @date.hour.upto(@date.hour + 7).each do |i|
+      break if i >= 24
+      t = sprintf('% 3d', @d.hourly_temperature(i))
+      p = @d.hourly_precipitation_probability(i)
+      d = @d.hourly_description(i)
+      puts "#{i}h #{t}° · #{p}% · #{d}"
+    end
+    puts
+  end
+
+  def display_tomorrow
+    puts "=== Demain ==="
+    temp_lo = @d.temperature_tomorrow_at_0600
+    temp_hi = @d.temperature_tomorrow_at_1100
+    proba = @d.precipitation_probability_tomorrow_morning
+    print "matin #{temp_lo}°/#{temp_hi}° #{proba}% · "
+    temp_lo = @d.temperature_tomorrow_at_1200
+    temp_hi = @d.temperature_tomorrow_at_1700
+    proba = @d.precipitation_probability_tomorrow_afternoon
+    puts "après-midi #{temp_lo}°/#{temp_hi}° #{proba}%"
+    puts
+  end
+
+  def display_two_weeks
+    puts "=== Tendances sur 2 semaines ==="
+    puts " " + @d.two_weeks_date.map { |e| e[8..9] }.join("   ")
+    temp_d = @date
+    14.times do |i|
+      print DAYS[temp_d.strftime('%a')]
+      print '  '
+      temp_d = temp_d.next
+    end
+    puts
+    puts @d.two_weeks_max_temperature.map { sprintf('% 3d°', _1) }.join(" ")
+    puts @d.two_weeks_min_temperature.map { sprintf('% 3d°', _1) }.join(" ")
+    puts
+  end
 end
-proba = proba / 6
-print "matin #{temp_low}°/#{temp_high}° #{proba}% · "
 
-# Tomorrow afternoon
-# Mean of hours 36 to 41
-temp_low = data['hourly']['temperature_2m'][36].round
-temp_high = data['hourly']['temperature_2m'][41].round
-proba = 0
-36.upto(41).each do |i|
-  proba += data['hourly']['precipitation_probability'][i]
-end
-proba = proba / 6
-puts "après-midi #{temp_low}°/#{temp_high}° #{proba}%"
-puts
-
-puts "=== Tendances sur 2 semaines ==="
-
-puts " " + data['daily']['time'].map { |e| e[8..9] }.join("   ")
-
-temp_d = d
-14.times do |i|
-  print DAYS[temp_d.strftime('%a')]
-  print '  '
-  temp_d = temp_d.next
-end
-puts
+# ----------------------------------------------------------------------
+data = MeteoData.new
+printer = Printer.new(data)
+printer.display_current_section
+printer.display_next_hours
+printer.display_tomorrow
+printer.display_two_weeks

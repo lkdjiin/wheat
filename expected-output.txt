@@ -1,16 +1,15 @@
-
 === Maintenant ===
-3° · Couvert · 2026-02-08 · 06:15
+3° · Couvert · 2026-02-08 · rapport : 06:15
 
 === Les prochaines heures ===
-06h   3° 0%
-07h   4° 0%
-08h   3° 0%
-09h   3° 0%
-10h   5° 0%
-11h   6° 0%
-12h   7° 0%
-13h   8° 0%
+06h   3° · 0% · Nuageux
+07h   4° · 0% · Couvert
+08h   3° · 0% · Couvert
+09h   3° · 0% · Couvert
+10h   5° · 0% · Couvert
+11h   6° · 0% · Ciel clair
+12h   7° · 0% · Ciel clair
+13h   8° · 0% · Ciel clair
 
 === Demain ===
 matin 3°/3° 0% · après-midi 4°/6° 0%
