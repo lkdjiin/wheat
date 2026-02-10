@@ -6,9 +6,13 @@ WEATHER_CODE = {
   '1' => 'Dégagé',
   '2' => 'Nuageux',
   '3' => 'Couvert',
+  '45' => 'Brouillard',
   '51' => 'Bruine légère',
   '53' => 'Bruine modérée',
   '55' => 'Bruine forte',
+  '61' => 'Pluie légère',
+  '63' => 'Pluie modérée',
+  '65' => 'Pluie forte',
 }
 
 DAYS = {
@@ -33,7 +37,8 @@ class MeteoData
   end
 
   def current_description
-    WEATHER_CODE[current['weather_code'].to_s] || 'CODE INCONNU'
+    desc = current['weather_code'].to_s
+    WEATHER_CODE[desc] || "CODE INCONNU #{desc}"
   end
 
   def current_time
@@ -49,7 +54,8 @@ class MeteoData
   end
 
   def hourly_description(hour)
-    WEATHER_CODE[hourly['weather_code'][hour].to_s] || 'CODE INCONNU'
+    desc = hourly['weather_code'][hour].to_s
+    WEATHER_CODE[desc] || "CODE INCONNU #{desc}"
   end
 
   def temperature_tomorrow_at_0600
