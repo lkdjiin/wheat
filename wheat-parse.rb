@@ -13,6 +13,9 @@ WEATHER_CODE = {
   '61' => 'Pluie faible',
   '63' => 'Pluie faible',
   '65' => 'Pluie forte',
+  '71' => 'Neige',
+  '73' => 'Neige',
+  '75' => 'Forte chute de neige',
 }
 
 DAYS = {
