@@ -7,11 +7,11 @@ WEATHER_CODE = {
   '2' => 'Nuageux',
   '3' => 'Couvert',
   '45' => 'Brouillard',
-  '51' => 'Bruine légère',
-  '53' => 'Bruine modérée',
-  '55' => 'Bruine forte',
-  '61' => 'Pluie légère',
-  '63' => 'Pluie modérée',
+  '51' => 'Averses faibles',
+  '53' => 'Averses faibles',
+  '55' => 'Averses fortes',
+  '61' => 'Pluie faible',
+  '63' => 'Pluie faible',
   '65' => 'Pluie forte',
 }
 
