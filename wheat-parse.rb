@@ -143,7 +143,7 @@ class Printer
       t = sprintf('% 3d', @d.hourly_temperature(i))
       p = @d.hourly_precipitation_probability(i)
       d = @d.hourly_description(i)
-      puts "#{sprintf('%2d', i)}h #{t}° · #{p}% · #{d}"
+      puts "#{sprintf('%2d', i)}h #{t}° · #{d}" + (p == '0' ? "" : " (#{p}%)")
     end
     puts
   end
@@ -173,7 +173,9 @@ class Printer
     puts
     puts @d.two_weeks_max_temperature.map { sprintf('% 3d°', _1) }.join(" ")
     puts @d.two_weeks_min_temperature.map { sprintf('% 3d°', _1) }.join(" ")
-    puts @d.two_weeks_mean_precipitation_probability.map { sprintf('%3d%%', _1) }.join(" ")
+    puts @d.two_weeks_mean_precipitation_probability.map {
+      _1 == '0' ? '    ' : sprintf('%3d%%', _1)
+    }.join(" ")
     puts
   end
 end
