@@ -25,7 +25,7 @@ module Wheat
         end
 
         opts.on('--version', 'Show gem version') do
-          puts "wheat #{VERSION}"
+          puts "wheat #{Wheat.version}"
           exit
         end
 

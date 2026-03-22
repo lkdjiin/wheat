@@ -1,6 +1,8 @@
+require './lib/wheat/version'
+
 Gem::Specification.new do |s|
   s.name = 'wheat'
-  s.version = '0.1.0'
+  s.version = Wheat.version
   s.summary = 'A simple CLI weather application using Open-Meteo API'
   s.description = 'Fetches weather data from Open-Meteo API and displays current conditions, hourly forecasts, tomorrow weather, and 2-week trend.'
   s.authors = ['Wheat Author']
