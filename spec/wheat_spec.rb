@@ -19,7 +19,7 @@ WEATHER_CODE = {
 }
 
 RSpec.describe Wheat::MeteoData do
-  let(:data_path) { File.join(__dir__, '..', 'open-meteo.json') }
+  let(:data_path) { File.join(__dir__, 'resources', 'data.json') }
   subject(:meteo_data) { described_class.new(data_path) }
 
   describe '#current_temperature' do
