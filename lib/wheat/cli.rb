@@ -16,11 +16,7 @@ module Wheat
         opts.on('-h', '--help', 'Show this help message') do
           puts opts
           puts
-          puts "Options:"
-          puts "  --offline              Use cached data without fetching from API"
-          puts "  --data FILE            Load JSON data from FILE"
-          puts "  -l, --location LAT,LON Override config location (e.g., 48.85,2.35)"
-          puts "  --version              Show gem version"
+          puts "How is the weather today?"
           exit
         end
 
@@ -29,7 +25,7 @@ module Wheat
           exit
         end
 
-        opts.on('--offline', 'Use cached data without fetching') do
+        opts.on('--offline', 'Use cached data without fetching from API') do
           options[:offline] = true
         end
 
@@ -38,7 +34,7 @@ module Wheat
           options[:offline] = true
         end
 
-        opts.on('-l', '--location LAT,LON', 'Override config location') do |loc|
+        opts.on('-l', '--location LAT,LON', 'Override config location (e.g., 48.85,2.35)') do |loc|
           lat, lon = loc.split(',').map(&:to_f)
           options[:location] = [lat, lon]
         end
