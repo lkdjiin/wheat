@@ -14,9 +14,9 @@ module Wheat
       params = {
         latitude: lat,
         longitude: lon,
-        daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_mean',
+        daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_mean,wind_speed_10m_mean',
         hourly: 'temperature_2m,precipitation_probability,weather_code',
-        current: 'temperature_2m,weather_code',
+        current: 'temperature_2m,weather_code,wind_speed_10m',
         timezone: 'auto',
         forecast_days: 14
       }
