@@ -17,6 +17,18 @@ module Wheat
       @date = DateTime.iso8601(@d.current_time)
     end
 
+    def print_summary
+      clear_screen
+      display_all
+      display_footer
+    end
+
+    def print_today
+      clear_screen
+      display_all_today_hours
+      display_footer
+    end
+
     def display_current_section
       temp = @d.current_temperature
       desc = @d.current_description
