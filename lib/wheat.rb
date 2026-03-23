@@ -7,4 +7,5 @@ require 'wheat/printer'
 require 'wheat/cli'
 
 module Wheat
+  EXIT_CODE_API_TOO_SLOW = 1
 end

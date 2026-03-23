@@ -52,7 +52,11 @@ module Wheat
 
       unless options[:offline]
         lat, lon = options[:location] || [config.latitude, config.longitude]
-        ApiClient.fetch(lat, lon)
+        result = ApiClient.fetch(lat, lon)
+        if result == :timeout
+          puts "The API is currently too slow. Try again in a few minutes."
+          exit EXIT_CODE_API_TOO_SLOW
+        end
       end
 
       data = MeteoData.new(data_path)
