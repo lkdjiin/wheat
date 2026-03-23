@@ -30,12 +30,39 @@ module Wheat
       puts "=== Aujourd'hui ==="
       @date.hour.upto(@date.hour + 7).each do |i|
         break if i >= 24
-        t = sprintf('% 3d', @d.hourly_temperature(i))
-        p = @d.hourly_precipitation_probability(i)
-        d = @d.hourly_description(i)
-        puts "#{sprintf('%2d', i)}h #{t}° · #{d}" + (p == '0' ? "" : " (#{p}%)")
+        display_hour(i)
       end
       puts
+    end
+
+    def display_all_today_hours
+      puts "=== Aujourd'hui ==="
+      0.upto(23).each { |i| display_hour(i) }
+      puts
+    end
+
+    def display_footer
+      puts "[Q]uit [R]ésumé [A]ujourd'hui"
+    end
+
+    def clear_screen
+      system('clear')
+    end
+
+    def display_all
+      display_current_section
+      display_next_hours
+      display_tomorrow
+      display_two_weeks
+    end
+
+    private
+
+    def display_hour(i)
+      t = sprintf('% 3d', @d.hourly_temperature(i))
+      p = @d.hourly_precipitation_probability(i)
+      d = @d.hourly_description(i)
+      puts "#{sprintf('%2d', i)}h #{t}° · #{d}" + (p == '0' ? "" : " (#{p}%)")
     end
 
     def display_tomorrow
@@ -67,13 +94,6 @@ module Wheat
         _1 == '0' ? '    ' : sprintf('%3d%%', _1)
       }.join(" ")
       puts
-    end
-
-    def display_all
-      display_current_section
-      display_next_hours
-      display_tomorrow
-      display_two_weeks
     end
   end
 end

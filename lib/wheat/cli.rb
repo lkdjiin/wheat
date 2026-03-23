@@ -1,4 +1,5 @@
 require 'optparse'
+require 'io/console'
 
 module Wheat
   class CLI
@@ -34,7 +35,9 @@ module Wheat
           options[:offline] = true
         end
 
-        opts.on('-l', '--location LAT,LON', 'Override config location (e.g., 48.85,2.35)') do |loc|
+        opts.on('-l',
+                '--location LAT,LON',
+                'Override config location (e.g., 48.85,2.35)') do |loc|
           lat, lon = loc.split(',').map(&:to_f)
           options[:location] = [lat, lon]
         end
@@ -54,7 +57,23 @@ module Wheat
 
       data = MeteoData.new(data_path)
       printer = Printer.new(data)
-      printer.display_all
+      interactive_loop(printer)
+    end
+
+    def interactive_loop(printer)
+      print_summary
+
+      loop do
+        key = STDIN.getch.upcase
+        case key
+        when 'A'
+          print_today
+        when 'R'
+          print_summary
+        when 'Q'
+          break
+        end
+      end
     end
 
     def determine_data_path(options)
@@ -63,6 +82,20 @@ module Wheat
       else
         ApiClient::DATA_FILE
       end
+    end
+
+    private
+
+    def print_summary
+      printer.clear_screen
+      printer.display_all
+      printer.display_footer
+    end
+
+    def print_today
+      printer.clear_screen
+      printer.display_all_today_hours
+      printer.display_footer
     end
   end
 end
