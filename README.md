@@ -1,6 +1,7 @@
 # Wheat
 
-CLI weather report that fetches data from the [Open-Meteo API](https://open-meteo.com/).
+CLI weather report that fetches data from the
+[Open-Meteo API](https://open-meteo.com/).
 
 - No API key required (uses the free Open-Meteo API)
 - (only) French language output
@@ -59,7 +60,8 @@ latitude: 49.771295
 longitude: 4.724286
 ```
 
-Replace the coordinates with your location. You can find coordinates on [latlong.net](https://latlong.net) or similar services.
+Replace the coordinates with your location. You can find coordinates on
+[latlong.net](https://latlong.net) or similar services.
 
 ## Usage
 
