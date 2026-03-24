@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'time'
 require 'wheat/version'
 require 'wheat/config'
 require 'wheat/api_client'

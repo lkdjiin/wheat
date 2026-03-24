@@ -50,7 +50,7 @@ module Wheat
       data_path = determine_data_path(options)
       config = Config.new
 
-      unless options[:offline]
+      unless options[:offline] || implicit_offline?(options)
         lat, lon = options[:location] || [config.latitude, config.longitude]
         result = ApiClient.fetch(lat, lon)
         if result == :timeout
@@ -63,6 +63,11 @@ module Wheat
       printer = Printer.new(data)
       printer.print_summary_screen
       interactive_loop(printer)
+    end
+
+    def implicit_offline?(options)
+      return false if options[:data_file]
+      ApiClient.cache_fresh_enough?
     end
 
     def interactive_loop(printer)

@@ -31,5 +31,29 @@ module Wheat
       return :timeout if $?.exitstatus == 28
       output_path
     end
+
+    def self.cache_fresh_enough?
+      return false unless File.exist?(DATA_FILE)
+      cached_time = cached_report_time
+      return false unless cached_time
+
+      current_hour = Time.now.strftime("%H").to_i
+      cached_hour = Time.parse(cached_time).strftime("%H").to_i
+
+      return false if current_hour != cached_hour
+      current_quarter == cached_quarter(cached_time)
+    end
+
+    def self.cached_report_time
+      JSON.load_file(DATA_FILE)['current']['time']
+    end
+
+    def self.current_quarter
+      Time.now.strftime("%M").to_i / 15
+    end
+
+    def self.cached_quarter(time_str)
+      Time.parse(time_str).strftime("%M").to_i / 15
+    end
   end
 end
