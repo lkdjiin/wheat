@@ -22,6 +22,8 @@ module Wheat
   }
 
   BLUE = "\e[34m"
+  RED = "\e[31m"
+  ORANGE = "\033[38;5;208m"
   RESET = "\e[0m"
 
   class Printer
@@ -153,7 +155,17 @@ module Wheat
 
     def colorize_temperature(temp)
       t = temp.to_i
-      t <= 0 ? "#{BLUE}#{temp}°#{RESET}" : "#{temp}°"
+      # t <= 0 ? "#{BLUE}#{temp}°#{RESET}" : "#{temp}°"
+
+      if t <= 0
+        "#{BLUE}#{temp}°#{RESET}"
+      elsif t >= 30
+        "#{RED}#{temp}°#{RESET}"
+      elsif t >= 25
+        "#{ORANGE}#{temp}°#{RESET}"
+      else
+        "#{temp}°"
+      end
     end
 
     def display_tendencies_first_week
