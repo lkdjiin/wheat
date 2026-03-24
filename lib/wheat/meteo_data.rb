@@ -36,6 +36,10 @@ module Wheat
       current['time']
     end
 
+    def current_wind
+      current['wind_speed_10m'].round.to_s
+    end
+
     def hourly_temperature(hour)
       hourly['temperature_2m'][hour].round.to_s
     end
@@ -77,6 +81,10 @@ module Wheat
       (proba / 6).to_s
     end
 
+    def wind_tomorrow
+      daily['wind_speed_10m_mean'][1].round.to_s
+    end
+
     def two_weeks_date
       daily['time']
     end
@@ -91,6 +99,10 @@ module Wheat
 
     def two_weeks_mean_precipitation_probability
       daily['precipitation_probability_mean'].map(&:to_s)
+    end
+
+    def two_weeks_wind
+      daily['wind_speed_10m_mean'].map { _1.round.to_s }
     end
 
     private

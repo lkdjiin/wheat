@@ -11,21 +11,37 @@ module Wheat
     'Sat' => 'sam'
   }
 
+  FULL_DAYS = {
+    'Sun' => 'dimanche',
+    'Mon' => 'lundi',
+    'Tue' => 'mardi',
+    'Wed' => 'mercredi',
+    'Thu' => 'jeudi',
+    'Fri' => 'vendredi',
+    'Sat' => 'samedi'
+  }
+
   class Printer
     def initialize(data)
       @d = data
       @date = DateTime.iso8601(@d.current_time)
     end
 
-    def print_summary
+    def print_summary_screen
       clear_screen
-      display_all
+      display_summary
       display_footer
     end
 
-    def print_today
+    def print_today_screen
       clear_screen
       display_all_today_hours
+      display_footer
+    end
+
+    def print_tendencies_screen
+      clear_screen
+      display_tendencies
       display_footer
     end
 
@@ -33,7 +49,8 @@ module Wheat
       temp = @d.current_temperature
       desc = @d.current_description
       date = @d.current_time.sub('T', ' · rapport : ')
-      puts "=== Maintenant ==="
+      wind = @d.current_wind
+      puts "=== Maintenant (#{wind} km/h) ==="
       puts "#{temp}° · #{desc} · #{date}"
       puts
     end
@@ -54,21 +71,19 @@ module Wheat
     end
 
     def display_footer
-      puts "[Q]uit [R]ésumé [A]ujourd'hui"
+      puts "[Q]uit [R]ésumé [A]ujourd'hui [T]endances"
     end
 
     def clear_screen
       system('clear')
     end
 
-    def display_all
+    def display_summary
       display_current_section
       display_next_hours
       display_tomorrow
       display_two_weeks
     end
-
-    private
 
     def display_hour(i)
       t = sprintf('% 3d', @d.hourly_temperature(i))
@@ -78,7 +93,8 @@ module Wheat
     end
 
     def display_tomorrow
-      puts "=== Demain ==="
+      wind = @d.wind_tomorrow
+      puts "=== Demain (#{wind} km/h) ==="
       temp_lo = @d.temperature_tomorrow_at_0600
       temp_hi = @d.temperature_tomorrow_at_1100
       proba = @d.precipitation_probability_tomorrow_morning
@@ -106,6 +122,62 @@ module Wheat
         _1 == '0' ? '    ' : sprintf('%3d%%', _1)
       }.join(" ")
       puts
+    end
+
+    def display_tendencies
+      puts "=== Tendances sur 2 semaines ==="
+      display_tendencies_first_week
+      display_tendencies_second_week
+    end
+
+    private
+
+    def display_tendencies_first_week
+      display_tendency(0..6)
+    end
+
+    def display_tendencies_second_week
+      display_tendency(7..13)
+    end
+
+    def display_tendency(from_to)
+      horizontal_separator = '|' + '---------|' * 7
+
+      puts
+      puts horizontal_separator
+
+      puts "|" + @d.two_weeks_date[from_to].map { |e|
+        "  " + e[8..9] + "     |"
+      }.join
+
+      temp_d = @date
+      7.times do
+        print sprintf('| %-8s', FULL_DAYS[temp_d.strftime('%a')])
+        temp_d = temp_d.next
+      end
+      puts "|"
+
+      puts horizontal_separator
+
+      puts @d.two_weeks_max_temperature[from_to].map {
+        sprintf('| % 3d°', _1)
+      }.join("    ") + "    |"
+
+      puts @d.two_weeks_min_temperature[from_to].map {
+        sprintf('| % 3d°', _1)
+      }.join("    ") + "    |"
+
+      puts horizontal_separator
+
+      puts @d.two_weeks_mean_precipitation_probability[from_to].map {
+        _1 == '0' ? '|     ' : sprintf('| %3d%%', _1)
+      }.join("    ") + "    |"
+
+      puts @d.two_weeks_wind[from_to].map {
+        sprintf('| % 3dkm/h', _1)
+      }.join(" ") + " |"
+
+      puts horizontal_separator
     end
   end
 end

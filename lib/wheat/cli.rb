@@ -61,7 +61,7 @@ module Wheat
 
       data = MeteoData.new(data_path)
       printer = Printer.new(data)
-      printer.print_summary
+      printer.print_summary_screen
       interactive_loop(printer)
     end
 
@@ -70,9 +70,11 @@ module Wheat
         key = STDIN.getch.upcase
         case key
         when 'A'
-          printer.print_today
+          printer.print_today_screen
         when 'R'
-          printer.print_summary
+          printer.print_summary_screen
+        when 'T'
+          printer.print_tendencies_screen
         when 'Q'
           break
         end

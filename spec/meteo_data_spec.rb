@@ -10,11 +10,25 @@ RSpec.describe Wheat::MeteoData do
     end
   end
 
+  describe '#current_wind' do
+    it 'returns the wind rounded' do
+      desc = meteo_data.current_wind
+      expect(desc).to eq '7'
+    end
+  end
+
   describe '#current_description' do
     it 'returns a weather description' do
       desc = meteo_data.current_description
       expect(desc).to be_a(String)
       expect(desc.length).to be > 0
+    end
+  end
+
+  describe '#wind_tomorrow' do
+    it 'returns the rounded wind for tomorrow' do
+      value = meteo_data.wind_tomorrow
+      expect(value).to eq '8'
     end
   end
 
@@ -42,6 +56,13 @@ RSpec.describe Wheat::MeteoData do
     it 'returns 14 temperatures' do
       temps = meteo_data.two_weeks_min_temperature
       expect(temps.count).to eq(14)
+    end
+  end
+
+  describe '#two_weeks_wind' do
+    it 'returns the 14 values' do
+      expect(meteo_data.two_weeks_wind)
+        .to eq(%w( 4 8 18 18 10 15 12 9 17 16 9 5 9 12 ))
     end
   end
 
