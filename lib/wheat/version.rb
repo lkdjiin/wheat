@@ -1,5 +1,5 @@
 module Wheat
   def self.version
-    '0.4.0'
+    '0.5.0.build.1'
   end
 end

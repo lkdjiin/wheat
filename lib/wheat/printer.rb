@@ -21,6 +21,9 @@ module Wheat
     'Sat' => 'samedi'
   }
 
+  BLUE = "\e[34m"
+  RESET = "\e[0m"
+
   class Printer
     def initialize(data)
       @d = data
@@ -51,7 +54,7 @@ module Wheat
       date = @d.current_time.sub('T', ' · rapport : ')
       wind = @d.current_wind
       puts "=== Maintenant (#{wind} km/h) ==="
-      puts "#{temp}° · #{desc} · #{date}"
+      puts "#{colorize_temperature(temp)} · #{desc} · #{date}"
       puts
     end
 
@@ -86,10 +89,13 @@ module Wheat
     end
 
     def display_hour(i)
-      t = sprintf('% 3d', @d.hourly_temperature(i))
+      t = @d.hourly_temperature(i)
       p = @d.hourly_precipitation_probability(i)
       d = @d.hourly_description(i)
-      puts "#{sprintf('%2d', i)}h #{t}° · #{d}" + (p == '0' ? "" : " (#{p}%)")
+      precip = p == '0' ? '' : " (#{p}%)"
+      hour = sprintf('%2d', i)
+      temp = colorize_temperature(sprintf('% 3d', t))
+      puts "#{hour}h #{temp} · #{d}#{precip}"
     end
 
     def display_tomorrow
@@ -98,11 +104,16 @@ module Wheat
       temp_lo = @d.temperature_tomorrow_at_0600
       temp_hi = @d.temperature_tomorrow_at_1100
       proba = @d.precipitation_probability_tomorrow_morning
-      print "matin #{temp_lo}°/#{temp_hi}° #{proba}% · "
+      temps = "#{colorize_temperature(temp_lo)}/" \
+        "#{colorize_temperature(temp_hi)}"
+      print "matin #{temps} #{proba}% · "
       temp_lo = @d.temperature_tomorrow_at_1200
       temp_hi = @d.temperature_tomorrow_at_1700
       proba = @d.precipitation_probability_tomorrow_afternoon
-      puts "après-midi #{temp_lo}°/#{temp_hi}° #{proba}%"
+      temps = "#{colorize_temperature(temp_lo)}/" \
+        "#{colorize_temperature(temp_hi)}"
+      print "après-midi #{temps} #{proba}%"
+      puts
       puts
     end
 
@@ -116,11 +127,18 @@ module Wheat
         temp_d = temp_d.next
       end
       puts
-      puts @d.two_weeks_max_temperature.map { sprintf('% 3d°', _1) }.join(" ")
-      puts @d.two_weeks_min_temperature.map { sprintf('% 3d°', _1) }.join(" ")
-      puts @d.two_weeks_mean_precipitation_probability.map {
+      max_temps = @d.two_weeks_max_temperature.map {
+        colorize_temperature(sprintf('% 3d', _1))
+      }.join(" ")
+      puts max_temps
+      min_temps = @d.two_weeks_min_temperature.map {
+        colorize_temperature(sprintf('% 3d', _1))
+      }.join(" ")
+      puts min_temps
+      precip = @d.two_weeks_mean_precipitation_probability.map {
         _1 == '0' ? '    ' : sprintf('%3d%%', _1)
       }.join(" ")
+      puts precip
       puts
     end
 
@@ -131,6 +149,11 @@ module Wheat
     end
 
     private
+
+    def colorize_temperature(temp)
+      t = temp.to_i
+      t <= 0 ? "#{BLUE}#{temp}°#{RESET}" : "#{temp}°"
+    end
 
     def display_tendencies_first_week
       display_tendency(0..6)
@@ -146,9 +169,8 @@ module Wheat
       puts
       puts horizontal_separator
 
-      puts "|" + @d.two_weeks_date[from_to].map { |e|
-        "  " + e[8..9] + "     |"
-      }.join
+      dates = @d.two_weeks_date[from_to].map { |e| "  " + e[8..9] + "     |" }
+      puts "|" + dates.join
 
       temp_d = @date
       7.times do
@@ -159,23 +181,27 @@ module Wheat
 
       puts horizontal_separator
 
-      puts @d.two_weeks_max_temperature[from_to].map {
-        sprintf('| % 3d°', _1)
+      max_temps = @d.two_weeks_max_temperature[from_to].map {
+        t = sprintf('% 3d', _1)
+        "| " + colorize_temperature(t)
       }.join("    ") + "    |"
+      puts max_temps
 
-      puts @d.two_weeks_min_temperature[from_to].map {
-        sprintf('| % 3d°', _1)
+      min_temps = @d.two_weeks_min_temperature[from_to].map {
+        t = sprintf('% 3d', _1)
+        "| " + colorize_temperature(t)
       }.join("    ") + "    |"
+      puts min_temps
 
       puts horizontal_separator
 
-      puts @d.two_weeks_mean_precipitation_probability[from_to].map {
+      precip = @d.two_weeks_mean_precipitation_probability[from_to].map {
         _1 == '0' ? '|     ' : sprintf('| %3d%%', _1)
       }.join("    ") + "    |"
+      puts precip
 
-      puts @d.two_weeks_wind[from_to].map {
-        sprintf('| % 3dkm/h', _1)
-      }.join(" ") + " |"
+      wind = @d.two_weeks_wind[from_to].map { sprintf('| % 3dkm/h', _1) }
+      puts wind.join(" ") + " |"
 
       puts horizontal_separator
     end
