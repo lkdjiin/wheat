@@ -85,6 +85,10 @@ module Wheat
       daily['wind_speed_10m_mean'][1].round.to_s
     end
 
+    def wind_today
+      daily['wind_speed_10m_mean'][0].round.to_s
+    end
+
     def two_weeks_date
       daily['time']
     end

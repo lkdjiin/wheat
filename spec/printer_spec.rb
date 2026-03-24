@@ -39,7 +39,9 @@ RSpec.describe Wheat::Printer do
 
   describe '#display_next_hours' do
     it 'outputs Aujourd hui section' do
-      expect { printer.display_next_hours }.to output(/=== Aujourd'hui ===/).to_stdout
+      expect {
+        printer.display_next_hours
+      }.to output(%r[=== Aujourd'hui \(4 km/h\) ===]).to_stdout
     end
 
     it 'outputs hours from current hour to midnight' do

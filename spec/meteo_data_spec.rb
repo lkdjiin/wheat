@@ -25,6 +25,13 @@ RSpec.describe Wheat::MeteoData do
     end
   end
 
+  describe '#wind_today' do
+    it 'returns the rounded mean wind for today' do
+      value = meteo_data.wind_today
+      expect(value).to eq '4'
+    end
+  end
+
   describe '#wind_tomorrow' do
     it 'returns the rounded wind for tomorrow' do
       value = meteo_data.wind_tomorrow
