@@ -2,20 +2,20 @@ require 'json'
 
 module Wheat
   WEATHER_CODE = {
-    '0' => 'Ciel clair',
-    '1' => 'Dégagé',
-    '2' => 'Nuageux',
-    '3' => 'Couvert',
-    '45' => 'Brouillard',
-    '51' => 'Averses faibles',
-    '53' => 'Averses faibles',
-    '55' => 'Averses fortes',
-    '61' => 'Pluie faible',
-    '63' => 'Pluie faible',
-    '65' => 'Pluie forte',
-    '71' => 'Neige',
-    '73' => 'Neige',
-    '75' => 'Forte chute de neige',
+    '0' => '🌣 Ciel clair',
+    '1' => '🌣 Dégagé',
+    '2' => '🌤 Nuageux',
+    '3' => '🌥 Couvert',
+    '45' => '🌫 Brouillard',
+    '51' => '🌦 Averses faibles',
+    '53' => '🌦 Averses faibles',
+    '55' => '🌧 Averses fortes',
+    '61' => '🌦 Pluie faible',
+    '63' => '🌦 Pluie faible',
+    '65' => '🌧 Pluie forte',
+    '71' => '❄ Neige',
+    '73' => '❄ Neige',
+    '75' => '❄ Forte chute de neige',
   }
 
   class MeteoData

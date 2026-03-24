@@ -75,8 +75,8 @@ RSpec.describe Wheat::MeteoData do
 
   describe 'WEATHER_CODE' do
     it 'has known weather codes' do
-      expect(Wheat::WEATHER_CODE['0']).to eq('Ciel clair')
-      expect(Wheat::WEATHER_CODE['3']).to eq('Couvert')
+      expect(Wheat::WEATHER_CODE['0']).to eq('🌣 Ciel clair')
+      expect(Wheat::WEATHER_CODE['3']).to eq('🌥 Couvert')
     end
   end
 end
