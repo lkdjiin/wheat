@@ -13,7 +13,7 @@ RSpec.describe Wheat::Printer do
     it 'outputs title section' do
       expect {
         printer.display_current_section
-      }.to output(%r{=== Maintenant \(7 km/h\) ===}).to_stdout
+      }.to output(%r{=== Maintenant \(#{Wheat::WIND_GLYPH} 7 km/h\) ===}).to_stdout
     end
 
     it 'outputs temperature' do
@@ -33,7 +33,7 @@ RSpec.describe Wheat::Printer do
     it 'outputs title section' do
       expect {
         printer.display_tomorrow
-      }.to output(%r{=== Demain \(8 km/h\) ===}).to_stdout
+      }.to output(%r{=== Demain \(#{Wheat::WIND_GLYPH} 8 km/h\) ===}).to_stdout
     end
   end
 
@@ -41,7 +41,7 @@ RSpec.describe Wheat::Printer do
     it 'outputs Aujourd hui section' do
       expect {
         printer.display_next_hours
-      }.to output(%r[=== Aujourd'hui \(4 km/h\) ===]).to_stdout
+      }.to output(%r[=== Aujourd'hui \(#{Wheat::WIND_GLYPH} 4 km/h\) ===]).to_stdout
     end
 
     it 'outputs hours from current hour to midnight' do

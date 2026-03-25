@@ -55,14 +55,14 @@ module Wheat
       desc = @d.current_description
       date = @d.current_time.sub('T', ' · rapport de ')
       wind = @d.current_wind
-      puts "=== Maintenant (#{wind} km/h) ==="
+      puts "=== Maintenant (#{WIND_GLYPH} #{wind} km/h) ==="
       puts "#{colorize_temperature(temp)} · #{desc} · #{date}"
       puts
     end
 
     def display_next_hours
       wind = @d.wind_today
-      puts "=== Aujourd'hui (#{wind} km/h) ==="
+      puts "=== Aujourd'hui (#{WIND_GLYPH} #{wind} km/h) ==="
       @date.hour.upto(@date.hour + 7).each do |i|
         break if i >= 24
         display_hour(i)
@@ -103,7 +103,7 @@ module Wheat
 
     def display_tomorrow
       wind = @d.wind_tomorrow
-      puts "=== Demain (#{wind} km/h) ==="
+      puts "=== Demain (#{WIND_GLYPH} #{wind} km/h) ==="
       temp_lo = @d.temperature_tomorrow_at_0600
       temp_hi = @d.temperature_tomorrow_at_1100
       proba = @d.precipitation_probability_tomorrow_morning

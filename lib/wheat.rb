@@ -10,4 +10,5 @@ require 'wheat/cli'
 module Wheat
   EXIT_CODE_API_TOO_SLOW = 1
   PRECIPITATION_BAR_GLYPH = '' # It's an umbrella in my terminal font.
+  WIND_GLYPH = ''
 end

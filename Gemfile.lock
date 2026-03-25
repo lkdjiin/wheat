@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    wheat (0.6.0.build.5)
+    wheat (0.7.0.build.3)
 
 GEM
   remote: https://rubygems.org/
