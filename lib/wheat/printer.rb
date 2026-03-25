@@ -95,7 +95,7 @@ module Wheat
       t = @d.hourly_temperature(i)
       p = @d.hourly_precipitation_probability(i)
       d = @d.hourly_description(i)
-      precip = p == '0' ? '' : " (#{p}%)"
+      precip = p == '0' ? '' : " #{precipitation_bar(p)}"
       hour = sprintf('%2d', i)
       temp = colorize_temperature(sprintf('% 3d', t))
       puts "#{hour}h #{temp} · #{d}#{precip}"
@@ -109,13 +109,13 @@ module Wheat
       proba = @d.precipitation_probability_tomorrow_morning
       temps = "#{colorize_temperature(temp_lo)}/" \
         "#{colorize_temperature(temp_hi)}"
-      print "matin #{temps} #{proba}% · "
+      print "matin #{temps} #{precipitation_bar(proba)} · "
       temp_lo = @d.temperature_tomorrow_at_1200
       temp_hi = @d.temperature_tomorrow_at_1700
       proba = @d.precipitation_probability_tomorrow_afternoon
       temps = "#{colorize_temperature(temp_lo)}/" \
         "#{colorize_temperature(temp_hi)}"
-      print "après-midi #{temps} #{proba}%"
+      print "après-midi #{temps} #{precipitation_bar(proba)}"
       puts
       puts
     end
@@ -151,11 +151,23 @@ module Wheat
       display_tendencies_second_week
     end
 
+    def precipitation_bar(probability)
+      case probability.to_i
+      when 75..100
+        PRECIPITATION_BAR_GLYPH * 3
+      when 50..74
+        PRECIPITATION_BAR_GLYPH * 2
+      when 1..49
+        PRECIPITATION_BAR_GLYPH
+      else
+        ''
+      end
+    end
+
     private
 
     def colorize_temperature(temp)
       t = temp.to_i
-      # t <= 0 ? "#{BLUE}#{temp}°#{RESET}" : "#{temp}°"
 
       if t <= 0
         "#{BLUE}#{temp}°#{RESET}"

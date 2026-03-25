@@ -105,6 +105,36 @@ RSpec.describe Wheat::Printer do
     end
   end
 
+  describe '#precipitation_bar' do
+    describe 'when probability is 75-100' do
+      it 'outputs three characters' do
+        value = printer.precipitation_bar('80')
+        expect(value).to eq Wheat::PRECIPITATION_BAR_GLYPH * 3
+      end
+    end
+
+    describe 'when probability is 50-74' do
+      it 'outputs two characters' do
+        value = printer.precipitation_bar('60')
+        expect(value).to eq Wheat::PRECIPITATION_BAR_GLYPH * 2
+      end
+    end
+
+    describe 'when probability is 1-49' do
+      it 'outputs one character' do
+        value = printer.precipitation_bar('7')
+        expect(value).to eq Wheat::PRECIPITATION_BAR_GLYPH
+      end
+    end
+
+    describe 'when probability is 0' do
+      it 'outputs no character' do
+        value = printer.precipitation_bar('0')
+        expect(value).to eq ''
+      end
+    end
+  end
+
   describe '#display_tendencies' do
     it 'outputs title section' do
       expect {
