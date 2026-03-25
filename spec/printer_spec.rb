@@ -27,6 +27,20 @@ RSpec.describe Wheat::Printer do
     it 'outputs timestamp' do
       expect { printer.display_current_section }.to output(/rapport/).to_stdout
     end
+
+    describe 'when use_glyph is false' do
+      let(:printer_no_glyph) { described_class.new(meteo_data, use_glyph: false) }
+
+      before do
+        allow(printer_no_glyph).to receive(:clear_screen).and_return(nil)
+      end
+
+      it 'outputs wind without glyph' do
+        expect {
+          printer_no_glyph.display_current_section
+        }.to output(%r{=== Maintenant \(7 km/h\) ===}).to_stdout
+      end
+    end
   end
 
   describe '#display_tomorrow' do
@@ -34,6 +48,20 @@ RSpec.describe Wheat::Printer do
       expect {
         printer.display_tomorrow
       }.to output(%r{=== Demain \(#{Wheat::WIND_GLYPH} 8 km/h\) ===}).to_stdout
+    end
+
+    describe 'when use_glyph is false' do
+      let(:printer_no_glyph) { described_class.new(meteo_data, use_glyph: false) }
+
+      before do
+        allow(printer_no_glyph).to receive(:clear_screen).and_return(nil)
+      end
+
+      it 'outputs wind without glyph' do
+        expect {
+          printer_no_glyph.display_tomorrow
+        }.to output(%r{=== Demain \(8 km/h\) ===}).to_stdout
+      end
     end
   end
 
@@ -47,6 +75,20 @@ RSpec.describe Wheat::Printer do
     it 'outputs hours from current hour to midnight' do
       output = capture_stdout { printer.display_next_hours }
       expect(output.scan(/\d{2}h/).count).to eq(6)
+    end
+
+    describe 'when use_glyph is false' do
+      let(:printer_no_glyph) { described_class.new(meteo_data, use_glyph: false) }
+
+      before do
+        allow(printer_no_glyph).to receive(:clear_screen).and_return(nil)
+      end
+
+      it 'outputs wind without glyph' do
+        expect {
+          printer_no_glyph.display_next_hours
+        }.to output(%r[=== Aujourd'hui \(4 km/h\) ===]).to_stdout
+      end
     end
   end
 
@@ -131,6 +173,17 @@ RSpec.describe Wheat::Printer do
       it 'outputs no character' do
         value = printer.precipitation_bar('0')
         expect(value).to eq ''
+      end
+    end
+
+    describe 'when use_glyph is false' do
+      let(:printer_no_glyph) { described_class.new(meteo_data, use_glyph: false) }
+
+      it 'outputs empty string for any probability' do
+        expect(printer_no_glyph.precipitation_bar('80')).to eq ''
+        expect(printer_no_glyph.precipitation_bar('60')).to eq ''
+        expect(printer_no_glyph.precipitation_bar('7')).to eq ''
+        expect(printer_no_glyph.precipitation_bar('0')).to eq ''
       end
     end
   end

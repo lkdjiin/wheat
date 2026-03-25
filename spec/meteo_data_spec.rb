@@ -52,6 +52,24 @@ RSpec.describe Wheat::MeteoData do
     end
   end
 
+  describe 'with use_glyph: false' do
+    let(:meteo_data_no_glyph) { described_class.new(data_path, use_glyph: false) }
+
+    describe '#current_description' do
+      it 'returns description without emoji' do
+        desc = meteo_data_no_glyph.current_description
+        expect(desc).to eq 'Couvert'
+      end
+    end
+
+    describe '#hourly_description' do
+      it 'returns description without emoji' do
+        desc = meteo_data_no_glyph.hourly_description(0)
+        expect(desc).not_to match(/\p{Emoji}/)
+      end
+    end
+  end
+
   describe '#two_weeks_max_temperature' do
     it 'returns 14 temperatures' do
       temps = meteo_data.two_weeks_max_temperature
@@ -75,8 +93,8 @@ RSpec.describe Wheat::MeteoData do
 
   describe 'WEATHER_CODE' do
     it 'has known weather codes' do
-      expect(Wheat::WEATHER_CODE['0']).to eq('🌣 Ciel clair')
-      expect(Wheat::WEATHER_CODE['3']).to eq('🌥 Couvert')
+      expect(Wheat::WEATHER_CODE_DESCRIPTION['0']).to eq('Ciel clair')
+      expect(Wheat::WEATHER_CODE_DESCRIPTION['3']).to eq('Couvert')
     end
   end
 end

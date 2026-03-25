@@ -9,4 +9,5 @@ longitude: 4.724286
 # Display options
 # =======================
 
-color: true # Allow/disallow colors in output
+color: true  # Allow/disallow colors in output
+glyph: true  # Allow/disallow glyphs in output

@@ -13,6 +13,7 @@ RSpec.describe Wheat::Config do
       config = described_class.new
       expect(config.latitude).to eq(49.771295)
       expect(config.longitude).to eq(4.724286)
+      expect(config.glyph).to eq(true)
     end
   end
 end

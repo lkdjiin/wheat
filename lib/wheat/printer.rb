@@ -27,9 +27,10 @@ module Wheat
   RESET = "\e[0m"
 
   class Printer
-    def initialize(data, use_color: true)
+    def initialize(data, use_color: true, use_glyph: true)
       @d = data
       @use_color = use_color
+      @use_glyph = use_glyph
       @date = DateTime.iso8601(@d.current_time)
     end
 
@@ -56,14 +57,14 @@ module Wheat
       desc = @d.current_description
       date = @d.current_time.sub('T', ' · rapport de ')
       wind = @d.current_wind
-      puts "=== Maintenant (#{WIND_GLYPH} #{wind} km/h) ==="
+      puts "=== Maintenant (#{wind_glyph_str(wind)}) ==="
       puts "#{colorize_temperature(temp)} · #{desc} · #{date}"
       puts
     end
 
     def display_next_hours
       wind = @d.wind_today
-      puts "=== Aujourd'hui (#{WIND_GLYPH} #{wind} km/h) ==="
+      puts "=== Aujourd'hui (#{wind_glyph_str(wind)}) ==="
       @date.hour.upto(@date.hour + 7).each do |i|
         break if i >= 24
         display_hour(i)
@@ -104,7 +105,7 @@ module Wheat
 
     def display_tomorrow
       wind = @d.wind_tomorrow
-      puts "=== Demain (#{WIND_GLYPH} #{wind} km/h) ==="
+      puts "=== Demain (#{wind_glyph_str(wind)}) ==="
       temp_lo = @d.temperature_tomorrow_at_0600
       temp_hi = @d.temperature_tomorrow_at_1100
       proba = @d.precipitation_probability_tomorrow_morning
@@ -153,6 +154,8 @@ module Wheat
     end
 
     def precipitation_bar(probability)
+      return '' unless @use_glyph
+
       case probability.to_i
       when 75..100
         PRECIPITATION_BAR_GLYPH * 3
@@ -166,6 +169,10 @@ module Wheat
     end
 
     private
+
+    def wind_glyph_str(wind)
+      @use_glyph ? "#{WIND_GLYPH} #{wind} km/h" : "#{wind} km/h"
+    end
 
     def colorize_temperature(temp)
       return "#{temp}°" unless @use_color

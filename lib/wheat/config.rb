@@ -5,11 +5,11 @@ module Wheat
     CONFIG_DIR = File.expand_path('~/.config/wheat')
     CONFIG_FILE = File.join(CONFIG_DIR, 'wheat.yml')
 
-    attr_reader :latitude, :longitude, :color
+    attr_reader :latitude, :longitude, :color, :glyph
 
     def initialize
       ensure_config_dir
-      @latitude, @longitude, @color = load_config
+      @latitude, @longitude, @color, @glyph = load_config
     end
 
     def ensure_config_dir
@@ -19,9 +19,10 @@ module Wheat
     def load_config
       if File.exist?(CONFIG_FILE)
         config = YAML.load_file(CONFIG_FILE)
-        [config['latitude'], config['longitude'], config.fetch('color', true)]
+        [config['latitude'], config['longitude'],
+         config.fetch('color', true), config.fetch('glyph', true)]
       else
-        [49.771295, 4.724286, true]
+        [49.771295, 4.724286, true, true]
       end
     end
 

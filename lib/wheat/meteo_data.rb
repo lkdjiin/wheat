@@ -1,35 +1,54 @@
 require 'json'
 
 module Wheat
-  WEATHER_CODE = {
-    '0' => '🌣 Ciel clair',
-    '1' => '🌣 Dégagé',
-    '2' => '🌤 Nuageux',
-    '3' => '🌥 Couvert',
-    '45' => '🌫 Brouillard',
-    '51' => '🌦 Averses faibles',
-    '53' => '🌦 Averses faibles',
-    '55' => '🌧 Averses fortes',
-    '61' => '🌦 Pluie faible',
-    '63' => '🌦 Pluie faible',
-    '65' => '🌧 Pluie forte',
-    '71' => '❄ Neige',
-    '73' => '❄ Neige',
-    '75' => '❄ Forte chute de neige',
+
+  WEATHER_CODE_DESCRIPTION = {
+    '0' => 'Ciel clair',
+    '1' => 'Dégagé',
+    '2' => 'Nuageux',
+    '3' => 'Couvert',
+    '45' => 'Brouillard',
+    '51' => 'Averses faibles',
+    '53' => 'Averses faibles',
+    '55' => 'Averses fortes',
+    '61' => 'Pluie faible',
+    '63' => 'Pluie faible',
+    '65' => 'Pluie forte',
+    '71' => 'Neige',
+    '73' => 'Neige',
+    '75' => 'Forte chute de neige',
+  }
+
+  WEATHER_CODE_GLYPH = {
+    '0' => '🌣',
+    '1' => '🌣',
+    '2' => '🌤',
+    '3' => '🌥',
+    '45' => '🌫',
+    '51' => '🌦',
+    '53' => '🌦',
+    '55' => '🌧',
+    '61' => '🌦',
+    '63' => '🌦',
+    '65' => '🌧',
+    '71' => '❄',
+    '73' => '❄',
+    '75' => '❄',
   }
 
   class MeteoData
-    def initialize(data_path)
+    def initialize(data_path, use_glyph: true)
       @data = JSON.load_file(data_path)
+      @use_glyph = use_glyph
+    end
+
+    def current_description
+      code = current['weather_code'].to_s
+      description_line_for(code)
     end
 
     def current_temperature
       "#{current['temperature_2m'].round}"
-    end
-
-    def current_description
-      desc = current['weather_code'].to_s
-      WEATHER_CODE[desc] || "CODE INCONNU #{desc}"
     end
 
     def current_time
@@ -49,8 +68,8 @@ module Wheat
     end
 
     def hourly_description(hour)
-      desc = hourly['weather_code'][hour].to_s
-      WEATHER_CODE[desc] || "CODE INCONNU #{desc}"
+      code = hourly['weather_code'][hour].to_s
+      description_line_for(code)
     end
 
     def temperature_tomorrow_at_0600
@@ -121,6 +140,12 @@ module Wheat
 
     def daily
       @data['daily']
+    end
+
+    def description_line_for(code)
+      description = WEATHER_CODE_DESCRIPTION[code] || "CODE INCONNU #{code}"
+      glyph = WEATHER_CODE_GLYPH[code] || ''
+      @use_glyph ? "#{glyph} #{description}" : description
     end
   end
 end
