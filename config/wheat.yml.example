@@ -1,2 +1,12 @@
+# =======================
+# API parameters
+# =======================
+
 latitude: 49.771295
 longitude: 4.724286
+
+# =======================
+# Display options
+# =======================
+
+color: true # Allow/disallow colors in output

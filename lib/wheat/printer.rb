@@ -27,8 +27,9 @@ module Wheat
   RESET = "\e[0m"
 
   class Printer
-    def initialize(data)
+    def initialize(data, use_color: true)
       @d = data
+      @use_color = use_color
       @date = DateTime.iso8601(@d.current_time)
     end
 
@@ -167,6 +168,8 @@ module Wheat
     private
 
     def colorize_temperature(temp)
+      return "#{temp}°" unless @use_color
+
       t = temp.to_i
 
       if t <= 0

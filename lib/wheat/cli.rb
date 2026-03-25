@@ -60,7 +60,7 @@ module Wheat
       end
 
       data = MeteoData.new(data_path)
-      printer = Printer.new(data)
+      printer = Printer.new(data, use_color: config.color)
       printer.print_summary_screen
       interactive_loop(printer)
     end
