@@ -53,27 +53,12 @@ rm -rf ~/.config/wheat
 
 ## Configuration
 
-Copy the configuration file :
-
-    cp config/wheat.yml.example ~/.config/wheat/wheat.yml
+Running `wheat` for the first time will create a config file in
+`~/.config/wheat/wheat.yml`.
 
 Replace the coordinates with your location. You can find coordinates on
 [latlong.net](https://latlong.net) or similar services.
 
-```yaml
-# =======================
-# API parameters
-# =======================
-
-latitude: 49.771295
-longitude: 4.724286
-
-# =======================
-# Display options
-# =======================
-
-color: true # Allow/disallow colors in output
-```
 
 ## Usage
 
