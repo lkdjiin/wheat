@@ -60,7 +60,13 @@ module Wheat
       end
 
       data = MeteoData.new(data_path, use_glyph: config.glyph)
-      printer = Printer.new(data, use_color: config.color, use_glyph: config.glyph)
+
+      # TODO I think it would be better to pass a single configuration hash
+      #      instead of all those key/value pairs.
+      printer = Printer.new(data,
+                            use_color: config.color,
+                            use_glyph: config.glyph,
+                            wind_glyph: config.wind_glyph)
       printer.print_summary_screen
       interactive_loop(printer)
     end

@@ -27,10 +27,15 @@ module Wheat
   RESET = "\e[0m"
 
   class Printer
-    def initialize(data, use_color: true, use_glyph: true)
+
+    # TODO Would be better to have a configuration hash instead of all those
+    #      key/value options pair. This is because in the near future we will have a
+    #      lot more of options.
+    def initialize(data, use_color: true, use_glyph: true, wind_glyph: WIND_GLYPH)
       @d = data
       @use_color = use_color
       @use_glyph = use_glyph
+      @wind_glyph = wind_glyph
       @date = DateTime.iso8601(@d.current_time)
     end
 
@@ -171,7 +176,7 @@ module Wheat
     private
 
     def wind_glyph_str(wind)
-      @use_glyph ? "#{WIND_GLYPH} #{wind} km/h" : "#{wind} km/h"
+      @use_glyph ? "#{@wind_glyph} #{wind} km/h" : "#{wind} km/h"
     end
 
     def colorize_temperature(temp)
