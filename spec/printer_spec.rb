@@ -11,9 +11,8 @@ RSpec.describe Wheat::Printer do
 
   describe '#display_current_section' do
     it 'outputs title section' do
-      expect {
-        printer.display_current_section
-      }.to output(%r{=== Maintenant \(#{Wheat::WIND_GLYPH} 7 km/h\) ===}).to_stdout
+      regex = %r{=== Maintenant \(#{Wheat::DEFAULT_WIND_GLYPH} 7 km/h\) ===}
+      expect { printer.display_current_section }.to output(regex).to_stdout
     end
 
     it 'outputs temperature' do
@@ -29,7 +28,9 @@ RSpec.describe Wheat::Printer do
     end
 
     describe 'when use_glyph is false' do
-      let(:printer_no_glyph) { described_class.new(meteo_data, use_glyph: false) }
+      let(:printer_no_glyph) do
+        described_class.new(meteo_data, config: { 'glyph' => false })
+      end
 
       before do
         allow(printer_no_glyph).to receive(:clear_screen).and_return(nil)
@@ -45,13 +46,14 @@ RSpec.describe Wheat::Printer do
 
   describe '#display_tomorrow' do
     it 'outputs title section' do
-      expect {
-        printer.display_tomorrow
-      }.to output(%r{=== Demain \(#{Wheat::WIND_GLYPH} 8 km/h\) ===}).to_stdout
+      regex = %r{=== Demain \(#{Wheat::DEFAULT_WIND_GLYPH} 8 km/h\) ===}
+      expect { printer.display_tomorrow }.to output(regex).to_stdout
     end
 
     describe 'when use_glyph is false' do
-      let(:printer_no_glyph) { described_class.new(meteo_data, use_glyph: false) }
+      let(:printer_no_glyph) do
+        described_class.new(meteo_data, config: { 'glyph' => false })
+      end
 
       before do
         allow(printer_no_glyph).to receive(:clear_screen).and_return(nil)
@@ -67,9 +69,8 @@ RSpec.describe Wheat::Printer do
 
   describe '#display_next_hours' do
     it 'outputs Aujourd hui section' do
-      expect {
-        printer.display_next_hours
-      }.to output(%r[=== Aujourd'hui \(#{Wheat::WIND_GLYPH} 4 km/h\) ===]).to_stdout
+      regex = %r[=== Aujourd'hui \(#{Wheat::DEFAULT_WIND_GLYPH} 4 km/h\) ===]
+      expect { printer.display_next_hours }.to output(regex).to_stdout
     end
 
     it 'outputs hours from current hour to midnight' do
@@ -78,7 +79,9 @@ RSpec.describe Wheat::Printer do
     end
 
     describe 'when use_glyph is false' do
-      let(:printer_no_glyph) { described_class.new(meteo_data, use_glyph: false) }
+      let(:printer_no_glyph) do
+        described_class.new(meteo_data, config: { 'glyph' => false })
+      end
 
       before do
         allow(printer_no_glyph).to receive(:clear_screen).and_return(nil)
@@ -177,7 +180,9 @@ RSpec.describe Wheat::Printer do
     end
 
     describe 'when use_glyph is false' do
-      let(:printer_no_glyph) { described_class.new(meteo_data, use_glyph: false) }
+      let(:printer_no_glyph) do
+        described_class.new(meteo_data, config: { 'glyph' => false })
+      end
 
       it 'outputs empty string for any probability' do
         expect(printer_no_glyph.precipitation_bar('80')).to eq ''

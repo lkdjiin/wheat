@@ -53,7 +53,9 @@ RSpec.describe Wheat::MeteoData do
   end
 
   describe 'with use_glyph: false' do
-    let(:meteo_data_no_glyph) { described_class.new(data_path, use_glyph: false) }
+    let(:meteo_data_no_glyph) do
+      described_class.new(data_path, config: { 'glyph' => false })
+    end
 
     describe '#current_description' do
       it 'returns description without emoji' do

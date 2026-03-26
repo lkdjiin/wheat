@@ -10,5 +10,13 @@ require 'wheat/cli'
 module Wheat
   EXIT_CODE_API_TOO_SLOW = 1
   PRECIPITATION_BAR_GLYPH = '' # It's an umbrella in my terminal font.
-  WIND_GLYPH = ''
+  DEFAULT_WIND_GLYPH = ''
+
+  DEFAULT_CONFIG = {
+    'latitude' => 49.77,
+    'longitude' => 4.72,
+    'color' => true,
+    'glyph' => true,
+    'wind_glyph' => DEFAULT_WIND_GLYPH,
+  }
 end

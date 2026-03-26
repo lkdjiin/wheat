@@ -48,10 +48,10 @@ module Wheat
 
     def execute(options)
       data_path = determine_data_path(options)
-      config = Config.new
+      config = Config.load_file
 
       unless options[:offline] || implicit_offline?(options)
-        lat, lon = options[:location] || [config.latitude, config.longitude]
+        lat, lon = options[:location] || [config['latitude'], config['longitude']]
         result = ApiClient.fetch(lat, lon)
         if result == :timeout
           puts "The API is currently too slow. Try again in a few minutes."
@@ -59,14 +59,9 @@ module Wheat
         end
       end
 
-      data = MeteoData.new(data_path, use_glyph: config.glyph)
+      data = MeteoData.new(data_path, config: config)
 
-      # TODO I think it would be better to pass a single configuration hash
-      #      instead of all those key/value pairs.
-      printer = Printer.new(data,
-                            use_color: config.color,
-                            use_glyph: config.glyph,
-                            wind_glyph: config.wind_glyph)
+      printer = Printer.new(data, config: config)
       printer.print_summary_screen
       interactive_loop(printer)
     end

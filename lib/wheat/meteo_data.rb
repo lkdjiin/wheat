@@ -37,9 +37,9 @@ module Wheat
   }
 
   class MeteoData
-    def initialize(data_path, use_glyph: true)
+    def initialize(data_path, config: DEFAULT_CONFIG)
       @data = JSON.load_file(data_path)
-      @use_glyph = use_glyph
+      @use_glyph = config['glyph']
     end
 
     def current_description

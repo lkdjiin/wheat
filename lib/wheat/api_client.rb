@@ -25,7 +25,6 @@ module Wheat
     end
 
     def fetch(url, output_path)
-      Config.ensure_config_dir
       command = "curl --no-progress-meter --max-time 5 '#{url}' > '#{output_path}'"
       system(command)
       return :timeout if $?.exitstatus == 28

@@ -28,14 +28,11 @@ module Wheat
 
   class Printer
 
-    # TODO Would be better to have a configuration hash instead of all those
-    #      key/value options pair. This is because in the near future we will have a
-    #      lot more of options.
-    def initialize(data, use_color: true, use_glyph: true, wind_glyph: WIND_GLYPH)
+    def initialize(data, config: DEFAULT_CONFIG)
       @d = data
-      @use_color = use_color
-      @use_glyph = use_glyph
-      @wind_glyph = wind_glyph
+      @use_color = config['color']
+      @use_glyph = config['glyph']
+      @wind_glyph = config['wind_glyph']
       @date = DateTime.iso8601(@d.current_time)
     end
 
