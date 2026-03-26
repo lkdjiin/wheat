@@ -28,6 +28,15 @@ module Wheat
 
   class Printer
 
+    # Initializes a new Printer to display weather data.
+    #
+    # data   - MeteoData instance containing weather information
+    # config - Configuration hash with color, glyph, wind_glyph settings
+    #          'color'      - Boolean whether or not use colors in output.
+    #          'glyph'      - Boolean whether or not use glyphs in output.
+    #          'wind_glyph' - String the glyph to symbolize the wind.
+    #
+    # Returns a new Printer instance.
     def initialize(data, config: DEFAULT_CONFIG)
       @d = data
       @use_color = config['color']

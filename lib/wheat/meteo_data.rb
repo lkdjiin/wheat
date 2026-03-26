@@ -37,6 +37,14 @@ module Wheat
   }
 
   class MeteoData
+    # Initializes a new MeteoData with weather data from a JSON file.
+    #
+    # data_path - Path to JSON file containing weather data from Open-Meteo API
+    # config    - Configuration hash (default: DEFAULT_CONFIG)
+    #             'glyph' - Boolean whether or not using glyphs in descriptions.
+    #             All other keys are ignored.
+    #
+    # Returns a new MeteoData instance.
     def initialize(data_path, config: DEFAULT_CONFIG)
       @data = JSON.load_file(data_path)
       @use_glyph = config['glyph']
