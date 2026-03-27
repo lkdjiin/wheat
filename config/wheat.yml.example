@@ -9,8 +9,9 @@ longitude: 4.724286
 # Display options
 # =======================
 
-color: true      # Allow/disallow colors in output
-glyph: true      # Allow/disallow glyphs in output
+color: true        # Allow/disallow colors in output
+glyph: true        # Allow/disallow glyphs in output
+min_wind_speed: 10 # Minimum wind speed (km/h) to display. Below this, wind is hidden.
 
 # =======================
 # Customizable glyphs

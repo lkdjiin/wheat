@@ -32,9 +32,10 @@ module Wheat
     #
     # data   - MeteoData instance containing weather information
     # config - Configuration hash with color, glyph, wind_glyph settings
-    #          'color'      - Boolean whether or not use colors in output.
-    #          'glyph'      - Boolean whether or not use glyphs in output.
-    #          'wind_glyph' - String the glyph to symbolize the wind.
+    #          'color'          - Boolean whether or not use colors in output.
+    #          'glyph'          - Boolean whether or not use glyphs in output.
+    #          'wind_glyph'     - String the glyph to symbolize the wind.
+    #          'min_wind_speed' - Integer minimum speed to display.
     #
     # Returns a new Printer instance.
     def initialize(data, config: DEFAULT_CONFIG)
@@ -42,6 +43,7 @@ module Wheat
       @use_color = config['color']
       @use_glyph = config['glyph']
       @wind_glyph = config['wind_glyph']
+      @min_wind_speed = config['min_wind_speed']
       @date = DateTime.iso8601(@d.current_time)
     end
 
@@ -67,15 +69,13 @@ module Wheat
       temp = @d.current_temperature
       desc = @d.current_description
       date = @d.current_time.sub('T', ' · rapport de ')
-      wind = @d.current_wind
-      puts "=== Maintenant (#{wind_glyph_str(wind)}) ==="
+      puts title_for_section('Maintenant', @d.current_wind)
       puts "#{colorize_temperature(temp)} · #{desc} · #{date}"
       puts
     end
 
     def display_next_hours
-      wind = @d.wind_today
-      puts "=== Aujourd'hui (#{wind_glyph_str(wind)}) ==="
+      puts title_for_section("Aujourd'hui", @d.wind_today)
       @date.hour.upto(@date.hour + 7).each do |i|
         break if i >= 24
         display_hour(i)
@@ -115,8 +115,7 @@ module Wheat
     end
 
     def display_tomorrow
-      wind = @d.wind_tomorrow
-      puts "=== Demain (#{wind_glyph_str(wind)}) ==="
+      puts title_for_section('Demain', @d.wind_tomorrow)
       temp_lo = @d.temperature_tomorrow_at_0600
       temp_hi = @d.temperature_tomorrow_at_1100
       proba = @d.precipitation_probability_tomorrow_morning
@@ -179,10 +178,18 @@ module Wheat
       end
     end
 
+    def wind_description(wind)
+      return nil if wind.to_i < @min_wind_speed
+
+      @use_glyph ? "(#{@wind_glyph} #{wind} km/h)" : "(#{wind} km/h)"
+    end
+
     private
 
-    def wind_glyph_str(wind)
-      @use_glyph ? "#{@wind_glyph} #{wind} km/h" : "#{wind} km/h"
+    def title_for_section(section_name, wind_speed)
+      decoration = '==='
+      wind = wind_description(wind_speed)
+      [decoration, section_name, wind, decoration].compact.join(' ')
     end
 
     def colorize_temperature(temp)

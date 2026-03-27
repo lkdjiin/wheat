@@ -14,16 +14,18 @@ module Wheat
 
   # Default configuration hash for weather display and API requests.
   #
-  # - latitude   - Float default latitude for Open-Meteo API
-  # - longitude  - Float default longitude for Open-Meteo API
-  # - color      - Boolean enable colorized temperature display
-  # - glyph      - Boolean enable weather and precipitation glyphs
-  # - wind_glyph - String wind glyph character
+  # latitude   - Float default latitude for Open-Meteo API
+  # longitude  - Float default longitude for Open-Meteo API
+  # color      - Boolean enable colorized temperature display
+  # glyph      - Boolean enable weather and precipitation glyphs
+  # wind_glyph - String wind glyph character
+  # min_wind_speed - Integer minimum wind speed (km/h) to display
   DEFAULT_CONFIG = {
     'latitude' => 49.77,
     'longitude' => 4.72,
     'color' => true,
     'glyph' => true,
     'wind_glyph' => DEFAULT_WIND_GLYPH,
+    'min_wind_speed' => 10,
   }
 end

@@ -3,7 +3,13 @@ require_relative '../lib/wheat'
 RSpec.describe Wheat::Printer do
   let(:data_path) { File.join(__dir__, 'resources', 'data.json') }
   let(:meteo_data) { Wheat::MeteoData.new(data_path) }
-  subject(:printer) { described_class.new(meteo_data) }
+  subject(:printer) do
+    described_class.new(meteo_data, config: {
+      'min_wind_speed' => 0,
+      'glyph' => true,
+      'color' => true,
+    })
+  end
 
   before do
     allow(printer).to receive(:clear_screen).and_return(nil)
@@ -11,7 +17,7 @@ RSpec.describe Wheat::Printer do
 
   describe '#display_current_section' do
     it 'outputs title section' do
-      regex = %r{=== Maintenant \(#{Wheat::DEFAULT_WIND_GLYPH} 7 km/h\) ===}
+      regex = %r{=== Maintenant \(\s*7 km/h\) ===}
       expect { printer.display_current_section }.to output(regex).to_stdout
     end
 
@@ -29,7 +35,7 @@ RSpec.describe Wheat::Printer do
 
     describe 'when use_glyph is false' do
       let(:printer_no_glyph) do
-        described_class.new(meteo_data, config: { 'glyph' => false })
+        described_class.new(meteo_data, config: { 'glyph' => false, 'min_wind_speed' => 0 })
       end
 
       before do
@@ -39,20 +45,36 @@ RSpec.describe Wheat::Printer do
       it 'outputs wind without glyph' do
         expect {
           printer_no_glyph.display_current_section
-        }.to output(%r{=== Maintenant \(7 km/h\) ===}).to_stdout
+        }.to output(%r{=== Maintenant \(\s*7 km/h\) ===}).to_stdout
+      end
+    end
+
+    describe 'when wind below min_wind_speed' do
+      let(:printer_low_wind) do
+        described_class.new(meteo_data, config: { 'min_wind_speed' => 10 })
+      end
+
+      before do
+        allow(printer_low_wind).to receive(:clear_screen).and_return(nil)
+      end
+
+      it 'outputs title without wind' do
+        expect {
+          printer_low_wind.display_current_section
+        }.to output(/=== Maintenant ===/).to_stdout
       end
     end
   end
 
   describe '#display_tomorrow' do
     it 'outputs title section' do
-      regex = %r{=== Demain \(#{Wheat::DEFAULT_WIND_GLYPH} 8 km/h\) ===}
+      regex = %r{=== Demain \(\s*8 km/h\) ===}
       expect { printer.display_tomorrow }.to output(regex).to_stdout
     end
 
     describe 'when use_glyph is false' do
       let(:printer_no_glyph) do
-        described_class.new(meteo_data, config: { 'glyph' => false })
+        described_class.new(meteo_data, config: { 'glyph' => false, 'min_wind_speed' => 0 })
       end
 
       before do
@@ -62,14 +84,30 @@ RSpec.describe Wheat::Printer do
       it 'outputs wind without glyph' do
         expect {
           printer_no_glyph.display_tomorrow
-        }.to output(%r{=== Demain \(8 km/h\) ===}).to_stdout
+        }.to output(%r{=== Demain \(\s*8 km/h\) ===}).to_stdout
+      end
+    end
+
+    describe 'when wind below min_wind_speed' do
+      let(:printer_low_wind) do
+        described_class.new(meteo_data, config: { 'min_wind_speed' => 10 })
+      end
+
+      before do
+        allow(printer_low_wind).to receive(:clear_screen).and_return(nil)
+      end
+
+      it 'outputs title without wind' do
+        expect {
+          printer_low_wind.display_tomorrow
+        }.to output(/=== Demain ===/).to_stdout
       end
     end
   end
 
   describe '#display_next_hours' do
     it 'outputs Aujourd hui section' do
-      regex = %r[=== Aujourd'hui \(#{Wheat::DEFAULT_WIND_GLYPH} 4 km/h\) ===]
+      regex = %r[=== Aujourd'hui \(\s*4 km/h\) ===]
       expect { printer.display_next_hours }.to output(regex).to_stdout
     end
 
@@ -80,7 +118,7 @@ RSpec.describe Wheat::Printer do
 
     describe 'when use_glyph is false' do
       let(:printer_no_glyph) do
-        described_class.new(meteo_data, config: { 'glyph' => false })
+        described_class.new(meteo_data, config: { 'glyph' => false, 'min_wind_speed' => 0 })
       end
 
       before do
@@ -90,7 +128,23 @@ RSpec.describe Wheat::Printer do
       it 'outputs wind without glyph' do
         expect {
           printer_no_glyph.display_next_hours
-        }.to output(%r[=== Aujourd'hui \(4 km/h\) ===]).to_stdout
+        }.to output(%r[=== Aujourd'hui \(\s*4 km/h\) ===]).to_stdout
+      end
+    end
+
+    describe 'when wind below min_wind_speed' do
+      let(:printer_low_wind) do
+        described_class.new(meteo_data, config: { 'min_wind_speed' => 10 })
+      end
+
+      before do
+        allow(printer_low_wind).to receive(:clear_screen).and_return(nil)
+      end
+
+      it 'outputs title without wind' do
+        expect {
+          printer_low_wind.display_next_hours
+        }.to output(/=== Aujourd'hui ===/).to_stdout
       end
     end
   end
@@ -224,6 +278,24 @@ RSpec.describe Wheat::Printer do
       ).to_stdout
     end
 
+  end
+
+  describe '#wind_description' do
+    subject(:wind_threshold) do
+      described_class.new(meteo_data, config: { 'min_wind_speed' => 10 })
+    end
+
+    it 'returns empty string when wind is below threshold' do
+      expect(wind_threshold.wind_description(5)).to be_nil
+    end
+
+    it 'returns wind string when wind equals threshold' do
+      expect(wind_threshold.wind_description(10)).to eq '(10 km/h)'
+    end
+
+    it 'returns wind string when wind is above threshold' do
+      expect(wind_threshold.wind_description(11)).to eq '(11 km/h)'
+    end
   end
 
   def capture_stdout
