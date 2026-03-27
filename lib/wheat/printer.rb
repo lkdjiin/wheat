@@ -253,7 +253,13 @@ module Wheat
       }.join("    ") + "    |"
       puts precip
 
-      wind = @d.two_weeks_wind[from_to].map { sprintf('| % 3dkm/h', _1) }
+      wind = @d.two_weeks_wind[from_to].map do |value|
+        if value.to_i < @min_wind_speed
+          '|        '
+        else
+          sprintf('| % 3dkm/h', value)
+        end
+      end
       puts wind.join(" ") + " |"
 
       puts horizontal_separator
