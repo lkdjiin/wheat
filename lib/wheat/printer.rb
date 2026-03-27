@@ -36,6 +36,7 @@ module Wheat
     #          'glyph'          - Boolean whether or not use glyphs in output.
     #          'wind_glyph'     - String the glyph to symbolize the wind.
     #          'min_wind_speed' - Integer minimum speed to display.
+    #          'min_rain_proba' - Integer minimum rain probability to display.
     #
     # Returns a new Printer instance.
     def initialize(data, config: DEFAULT_CONFIG)
@@ -44,6 +45,7 @@ module Wheat
       @use_glyph = config['glyph']
       @wind_glyph = config['wind_glyph']
       @min_wind_speed = config['min_wind_speed']
+      @min_rain_proba = config['min_rain_proba']
       @date = DateTime.iso8601(@d.current_time)
     end
 
@@ -108,7 +110,7 @@ module Wheat
       t = @d.hourly_temperature(i)
       p = @d.hourly_precipitation_probability(i)
       d = @d.hourly_description(i)
-      precip = p == '0' ? '' : " #{precipitation_bar(p)}"
+      precip = p.to_i < @min_rain_proba ? '' : " #{precipitation_bar(p)}"
       hour = sprintf('%2d', i)
       temp = colorize_temperature(sprintf('% 3d', t))
       puts "#{hour}h #{temp} · #{d}#{precip}"
@@ -151,7 +153,7 @@ module Wheat
       }.join(" ")
       puts min_temps
       precip = @d.two_weeks_mean_precipitation_probability.map {
-        _1 == '0' ? '    ' : sprintf('%3d%%', _1)
+        _1.to_i < @min_rain_proba ? '    ' : sprintf('%3d%%', _1)
       }.join(" ")
       puts precip
       puts
@@ -249,7 +251,7 @@ module Wheat
       puts horizontal_separator
 
       precip = @d.two_weeks_mean_precipitation_probability[from_to].map {
-        _1 == '0' ? '|     ' : sprintf('| %3d%%', _1)
+        _1.to_i < @min_rain_proba ? '|     ' : sprintf('| %3d%%', _1)
       }.join("    ") + "    |"
       puts precip
 

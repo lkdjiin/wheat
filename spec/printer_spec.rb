@@ -6,6 +6,7 @@ RSpec.describe Wheat::Printer do
   subject(:printer) do
     described_class.new(meteo_data, config: {
       'min_wind_speed' => 0,
+      'min_rain_proba' => 1,
       'glyph' => true,
       'color' => true,
     })
@@ -118,7 +119,10 @@ RSpec.describe Wheat::Printer do
 
     describe 'when use_glyph is false' do
       let(:printer_no_glyph) do
-        described_class.new(meteo_data, config: { 'glyph' => false, 'min_wind_speed' => 0 })
+        described_class.new(meteo_data,
+                            config: { 'glyph' => false,
+                                      'min_rain_proba' => 1,
+                                      'min_wind_speed' => 0 })
       end
 
       before do
@@ -134,7 +138,9 @@ RSpec.describe Wheat::Printer do
 
     describe 'when wind below min_wind_speed' do
       let(:printer_low_wind) do
-        described_class.new(meteo_data, config: { 'min_wind_speed' => 10 })
+        described_class.new(meteo_data,
+                            config: { 'min_wind_speed' => 10,
+                                      'min_rain_proba' => 1 })
       end
 
       before do
