@@ -9,7 +9,12 @@ module Wheat
     end
 
     def parse_options(args)
-      options = { offline: false, data_file: nil, location: nil }
+      options = {
+        offline: false,
+        data_file: nil,
+        location: nil,
+        force_refresh: false,
+      }
 
       OptionParser.new do |opts|
         opts.banner = "Usage: wheat [options]"
@@ -28,6 +33,12 @@ module Wheat
 
         opts.on('--offline', 'Use cached data without fetching from API') do
           options[:offline] = true
+        end
+
+        opts.on(
+          '--force-refresh',
+          'Fetch fresh data from the API, ignoring cache freshness check.') do
+          options[:force_refresh] = true
         end
 
         opts.on('--data FILE', 'Load JSON data from FILE') do |file|
@@ -50,7 +61,7 @@ module Wheat
       data_path = determine_data_path(options)
       config = Config.load_file
 
-      unless options[:offline] || implicit_offline?(options)
+      unless options[:offline] || (implicit_offline?(options) && !options[:force_refresh])
         lat, lon = options[:location] || [config['latitude'], config['longitude']]
         result = ApiClient.fetch(lat, lon)
         if result == :timeout
