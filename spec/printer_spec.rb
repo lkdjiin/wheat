@@ -304,6 +304,93 @@ RSpec.describe Wheat::Printer do
     end
   end
 
+  describe '#colorize_temperature' do
+    let(:printer_no_color) do
+      described_class.new(meteo_data, config: { 'color' => false })
+    end
+
+    let(:printer_with_color) do
+      described_class.new(meteo_data, config: { 'color' => true })
+    end
+
+    describe 'when color is disabled' do
+      it 'returns temperature without color codes' do
+        result = printer_no_color.send(:colorize_temperature, '15')
+        expect(result).to eq '15°'
+      end
+    end
+
+    describe 'when color is enabled' do
+      it 'returns blue for temperature <= 0' do
+        result = printer_with_color.send(:colorize_temperature, '0')
+        expect(result).to include("\e[34m")
+        expect(result).to include('0°')
+        expect(result).to include("\e[0m")
+      end
+
+      it 'returns blue for negative temperatures' do
+        result = printer_with_color.send(:colorize_temperature, '-5')
+        expect(result).to include("\e[34m")
+        expect(result).to include('-5°')
+      end
+
+      it 'returns red for temperature >= 30' do
+        result = printer_with_color.send(:colorize_temperature, '30')
+        expect(result).to include("\e[31m")
+        expect(result).to include('30°')
+      end
+
+      it 'returns red for very hot temperatures' do
+        result = printer_with_color.send(:colorize_temperature, '35')
+        expect(result).to include("\e[31m")
+        expect(result).to include('35°')
+      end
+
+      it 'returns orange for temperature >= 25 and < 30' do
+        result = printer_with_color.send(:colorize_temperature, '27')
+        expect(result).to include("\033[38;5;208m")
+        expect(result).to include('27°')
+      end
+
+      it 'returns no color for temperature < 25 and > 0' do
+        result = printer_with_color.send(:colorize_temperature, '20')
+        expect(result).to eq '20°'
+      end
+    end
+  end
+
+  describe '#title_for_section' do
+    let(:printer_no_wind) do
+      described_class.new(meteo_data, config: { 'min_wind_speed' => 100 })
+    end
+
+    it 'formats section title with wind' do
+      result = printer.send(:title_for_section, 'Test', '10')
+      expect(result).to include('===')
+      expect(result).to include('Test')
+      expect(result).to include('10 km/h')
+    end
+
+    it 'formats section title without wind when below threshold' do
+      result = printer_no_wind.send(:title_for_section, 'Test', '5')
+      expect(result).to eq '=== Test ==='
+    end
+  end
+
+  describe 'constants' do
+    it 'PRECIPITATION_BAR_GLYPH is defined' do
+      expect(Wheat::PRECIPITATION_BAR_GLYPH).to be_a(String)
+    end
+
+    it 'DEFAULT_WIND_GLYPH is defined' do
+      expect(Wheat::DEFAULT_WIND_GLYPH).to be_a(String)
+    end
+
+    it 'EXIT_CODE_API_TOO_SLOW is defined' do
+      expect(Wheat::EXIT_CODE_API_TOO_SLOW).to eq 1
+    end
+  end
+
   def capture_stdout
     StringIO.new.tap do |stream|
       $stdout = stream
