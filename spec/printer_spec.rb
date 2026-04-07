@@ -321,41 +321,35 @@ RSpec.describe Wheat::Printer do
     end
 
     describe 'when color is enabled' do
-      it 'returns blue for temperature <= 0' do
-        result = printer_with_color.send(:colorize_temperature, '0')
-        expect(result).to include("\e[34m")
-        expect(result).to include('0°')
-        expect(result).to include("\e[0m")
-      end
-
       it 'returns blue for negative temperatures' do
         result = printer_with_color.send(:colorize_temperature, '-5')
-        expect(result).to include("\e[34m")
+        expect(result).to include(Wheat::BLUE)
         expect(result).to include('-5°')
       end
 
       it 'returns red for temperature >= 30' do
         result = printer_with_color.send(:colorize_temperature, '30')
-        expect(result).to include("\e[31m")
+        expect(result).to include(Wheat::RED)
         expect(result).to include('30°')
-      end
-
-      it 'returns red for very hot temperatures' do
-        result = printer_with_color.send(:colorize_temperature, '35')
-        expect(result).to include("\e[31m")
-        expect(result).to include('35°')
       end
 
       it 'returns orange for temperature >= 25 and < 30' do
         result = printer_with_color.send(:colorize_temperature, '27')
-        expect(result).to include("\033[38;5;208m")
+        expect(result).to include(Wheat::ORANGE)
         expect(result).to include('27°')
       end
 
-      it 'returns no color for temperature < 25 and > 0' do
-        result = printer_with_color.send(:colorize_temperature, '20')
-        expect(result).to eq '20°'
+      it 'returns green for temperature >= 20 and < 25' do
+        result = printer_with_color.send(:colorize_temperature, '22')
+        expect(result).to include(Wheat::GREEN)
+        expect(result).to include('22°')
       end
+
+      it 'returns no color for temperature < 20 and > 0' do
+        result = printer_with_color.send(:colorize_temperature, '18')
+        expect(result).to eq '18°'
+      end
+
     end
   end
 

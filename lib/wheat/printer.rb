@@ -24,6 +24,7 @@ module Wheat
   BLUE = "\e[34m"
   RED = "\e[31m"
   ORANGE = "\033[38;5;208m"
+  GREEN = "\033[38;5;46m"
   RESET = "\e[0m"
 
   class Printer
@@ -205,6 +206,8 @@ module Wheat
         "#{RED}#{temp}°#{RESET}"
       elsif t >= 25
         "#{ORANGE}#{temp}°#{RESET}"
+      elsif t >= 20
+        "#{GREEN}#{temp}°#{RESET}"
       else
         "#{temp}°"
       end
