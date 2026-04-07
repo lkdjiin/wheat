@@ -25,9 +25,11 @@ module Wheat
     end
 
     def fetch(url, output_path)
-      command = "curl --no-progress-meter --max-time 5 '#{url}' > '#{output_path}'"
+      temp_file = output_path + '-temp'
+      command = "curl --no-progress-meter --max-time 5 '#{url}' > '#{temp_file}'"
       system(command)
       return :timeout if $?.exitstatus == 28
+      FileUtils.move(temp_file, output_path, force: true)
       output_path
     end
 
