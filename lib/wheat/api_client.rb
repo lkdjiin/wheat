@@ -38,7 +38,10 @@ module Wheat
       cached_time = cached_report_time
       return false unless cached_time
 
-      current_hour = Time.now.strftime("%H").to_i
+      now = Time.now
+      return false if now.strftime("%Y-%m-%d") != cached_time[0..9]
+
+      current_hour = now.strftime("%H").to_i
       cached_hour = Time.parse(cached_time).strftime("%H").to_i
 
       return false if current_hour != cached_hour

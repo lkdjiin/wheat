@@ -17,6 +17,23 @@ RSpec.describe Wheat::ApiClient do
       allow(File).to receive(:exist?).and_return(true)
     end
 
+    # TODO At least one test for cache_fresh_enough? == true is missing
+
+    context 'with another day' do
+      before do
+        # Make sure we compare today's date with yesteday's date
+        t = Time.now
+        t = (t - 24*3600).strftime('%Y-%m-%dT%H:%M')
+        allow(JSON).to receive(:load_file).with(data_file).and_return({
+          'current' => { 'time' => t }
+        })
+      end
+
+      it 'returns false' do
+        expect(described_class.cache_fresh_enough?).to be false
+      end
+    end
+
     context 'when cache file does not exist' do
       before do
         allow(File).to receive(:exist?).with(data_file).and_return(false)
